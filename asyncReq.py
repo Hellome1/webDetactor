@@ -5,9 +5,11 @@ import time
 import aiohttp
 import ip
 import excelt
+import mysql.save
+import tool.index
 
-needIpNum = 50
-onceReqNum = 100 #一次请求ip数量
+needIpNum = 100
+onceReqNum = 200 #一次请求ip数量
 
 header = ['ip', 'title', 'keywords', 'description']
 infos = [header] #存储可用的ip以及信息
@@ -28,18 +30,20 @@ async def main(url):
                 keywords = html.xpath('//meta[@name="keywords"]/@content') and html.xpath('//meta[@name="keywords"]/@content')[0] or ''
                 description = html.xpath('//meta[@name="description"]/@content') and html.xpath('//meta[@name="description"]/@content')[0] or ''
                 title = html.xpath('//title/text()') and html.xpath('//title/text()')[0] or ''
-                print('__keywords__:', keywords)
-                print('__description__:', description)
-                print('__title__:', title)
+                # print('__keywords__:', keywords)
+                # print('__description__:', description)
+                # print('__title__:', title)
+                print('__title__:', title[0:5] + '...')
                 if keywords or description or title:
                     infos.append([url, title, keywords, description])
-            await session.close()
         except aiohttp.client_exceptions.ClientConnectorError as e:
             print('eeeeee', e)
         except asyncio.TimeoutError as e:
             print('tttttt', e)
         except:
             print('xxxxxx')
+        finally:
+            await session.close()
 
 def getlocaltime():
     t = time.localtime()
@@ -62,9 +66,12 @@ def start():
     while len(infos) <= needIpNum:
         loop = asyncio.get_event_loop()
         loop.run_until_complete(eachUrls())
-        time.sleep(1)
+        # time.sleep(1)
+        asyncio.sleep(1)
     #最后保存
     excelt.save(infos)
+    sqlInfo = tool.index.filter(infos)
+    mysql.save.s(sqlInfo)
     endtime = time.time()
     print('总用时%fs'%(endtime - starttime))
 
