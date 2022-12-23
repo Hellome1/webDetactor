@@ -8,7 +8,7 @@ import excelt
 import mysql.save
 import tool.index
 
-needIpNum = 100
+needIpNum = 1000
 onceReqNum = 200 #一次请求ip数量
 
 header = ['ip', 'title', 'keywords', 'description']

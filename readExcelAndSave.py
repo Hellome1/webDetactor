@@ -1,7 +1,7 @@
 import xlrd
 import mysql.save
 
-filename = './ips/ip202212211524.xls'
+filename = './ips/ip202212231438.xls'
 def getInfoFromXls():
     infos = []
     wb = xlrd.open_workbook(filename)

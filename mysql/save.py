@@ -23,7 +23,10 @@ def s(l):
             inf4 = escape_string(info[3])
             sql = "insert into web(ip, title, keywords, description)" \
             "values('%s', '%s',  '%s', '%s')"%(inf1, inf2, inf3, inf4)
-            if lenCheck(info): cursor.execute(sql)
+            try:
+                if lenCheck(info): cursor.execute(sql)
+            except:
+                print(info)
     finally:
         db.commit()
         cursor.close()
